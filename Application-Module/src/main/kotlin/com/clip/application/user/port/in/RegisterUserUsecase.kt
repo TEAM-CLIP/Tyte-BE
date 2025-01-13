@@ -11,7 +11,7 @@ interface RegisterUserUsecase {
             val nickname: String,
         ) : Command()
 
-        class Basic(
+        data class Basic(
             val email: String,
             val nickname: String,
             val password: String
