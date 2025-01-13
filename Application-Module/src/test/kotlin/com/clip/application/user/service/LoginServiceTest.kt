@@ -37,45 +37,40 @@ class LoginServiceTest :
                 mockUserTokenManagementPort,
                 mockUserPasswordConvertPort
             )
-
         given("소셜 로그인에서 요청한 사용자가") {
-            var command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "registered")
             val authInfo = AuthInfo(LoginProvider.GOOGLE, "socialId", "email")
-            val getUserAuth =
-                UserAuth(
-                    userId = DomainId.generate(),
-                    socialId = "socialId",
-                    loginProvider = LoginProvider.GOOGLE,
-                )
+            val getUserAuth = UserAuth(
+                userId = DomainId.generate(),
+                socialId = "socialId",
+                loginProvider = LoginProvider.GOOGLE,
+            )
             val getUser = UserFixture.createUser(getUserAuth.userId)
-            every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "registered") } returns authInfo
+
             `when`("다른 방법으로 가입되어 있다면") {
+                val command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "registered")
+                every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "registered") } returns authInfo
                 every {
                     authInfo.email?.let {
                         mockUserAuthManagementPort.getUserAuthByEmail(it)
                     }
-                } returns UserAuth(
-                    userId = DomainId.generate(),
-                    socialId = "socialId",
-                    loginProvider = LoginProvider.APPLE,
-                )
+                } returns getUserAuth.copy(loginProvider = LoginProvider.APPLE)
+
                 then("UserException.UserAlreadyRegisteredException 예외가 발생한다.") {
                     shouldThrow<UserException.UserAuthAlreadyExistsException> {
                         socialLoginService.socialLogin(command)
                     }
-
                 }
             }
-            every {
-                mockUserAuthManagementPort.getUserAuth(
-                    authInfo.socialId,
-                    authInfo.loginProvider,
-                )
-            } returns getUserAuth
-            every { mockUserManagementPort.getUser(any()) } returns getUser
-            every { mockUserTokenConvertPort.generateAccessToken(getUser) } returns "accessToken"
-            every { mockUserTokenConvertPort.generateRefreshToken(getUser) } returns "refreshToken"
+
             `when`("기존에 존재한다면") {
+                val command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "registered")
+                every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "registered") } returns authInfo
+                every { mockUserAuthManagementPort.getUserAuth(authInfo.socialId, authInfo.loginProvider) } returns getUserAuth
+                every { authInfo.email?.let { mockUserAuthManagementPort.getUserAuthByEmail(it) } } returns getUserAuth
+                every { mockUserManagementPort.getUser(any()) } returns getUser
+                every { mockUserTokenConvertPort.generateAccessToken(getUser) } returns "accessToken"
+                every { mockUserTokenConvertPort.generateRefreshToken(getUser) } returns "refreshToken"
+
                 val response = socialLoginService.socialLogin(command)
                 then("access token과 refresh token을 반환하는 success 인스턴스를 반환한다.") {
                     response.shouldBeInstanceOf<LoginUsecase.Success>()
@@ -85,8 +80,11 @@ class LoginServiceTest :
                 }
             }
 
-            every { mockUserManagementPort.getUser(any()) } returns null
-            `when`("인증 정보만 존재하면 존재하고 사용자 정보가 없다면") {
+            `when`("인증 정보만 존재하고 사용자 정보가 없다면") {
+                val command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "registered")
+                every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "registered") } returns authInfo
+                every { mockUserAuthManagementPort.getUserAuth(authInfo.socialId, authInfo.loginProvider) } returns getUserAuth
+                every { mockUserManagementPort.getUser(any()) } returns null
 
                 then("InvalidStateException 예외가 발생한다.") {
                     shouldThrow<DefaultException.InvalidStateException> {
@@ -95,24 +93,20 @@ class LoginServiceTest :
                 }
             }
 
-            command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "nonRegistered")
-            every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "nonRegistered") } returns authInfo
-            every {
-                mockUserAuthManagementPort.getUserAuth(
-                    authInfo.socialId,
-                    authInfo.loginProvider,
-                )
-            } returns null
-            every {
-                authInfo.email?.let {
-                    mockUserTokenConvertPort.generateRegisterToken(
-                        socialId = authInfo.socialId,
-                        socialLoginProvider = authInfo.loginProvider.name,
-                        email = it
-                    )
-                }
-            } returns "registerToken"
             `when`("가입되지 않았다면") {
+                val command = LoginUsecase.Command.Social(LoginProvider.GOOGLE.name, "nonRegistered")
+                every { mockAuthInfoRetrievePort.getAuthInfo(LoginProvider.GOOGLE, "nonRegistered") } returns authInfo
+                every { mockUserAuthManagementPort.getUserAuth(authInfo.socialId, authInfo.loginProvider) } returns null
+                every {
+                    authInfo.email?.let {
+                        mockUserTokenConvertPort.generateRegisterToken(
+                            socialId = authInfo.socialId,
+                            socialLoginProvider = authInfo.loginProvider.name,
+                            email = it
+                        )
+                    }
+                } returns "registerToken"
+
                 val response = socialLoginService.socialLogin(command)
                 then("register token을 반환하는 nonRegistered 인스턴스를 반환한다.") {
                     response.shouldBeInstanceOf<LoginUsecase.NonRegistered>()

@@ -7,6 +7,7 @@ import com.clip.bootstrap.user.dto.LogoutRequest
 import com.clip.bootstrap.user.dto.RegisterUserRequest
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.argThat
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -34,27 +35,53 @@ class UserControllerTest : ControllerSupporter() {
 
 
     @Test
+    fun registerSocialUserTest() {
+        // given
+        val request = RegisterUserRequest.Social("register", "nickname")
+        val command = RegisterUserUsecase.Command.Social(request.registerToken, request.nickname)
+        given(registerUserUsecase.registerSocialUser(command)).willReturn(
+            RegisterUserUsecase.Response("accessToken", "refreshToken")
+        )
+        // when
+        val response = mockMvc.post("/api/v1/users/social-register") {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(request)
+        }
+        // then
+        response.andExpect {
+            status { isOk() }
+            jsonPath("$.accessToken") {
+                exists()
+                isString()
+                isNotEmpty()
+            }
+            jsonPath("$.refreshToken") {
+                exists()
+                isString()
+                isNotEmpty()
+            }
+        }
+    }
+
+    @Test
     fun registerBasicUserTest() {
         // given
         val request = RegisterUserRequest.Basic("email", "nickname", "password")
-        val command =
-            RegisterUserUsecase.Command.Basic(
-                request.email,
-                request.nickname,
-                request.password,
-            )
-        given(registerUserUsecase.registerBasicUser(command)).willReturn(
-            RegisterUserUsecase.Response(
-                "accessToken",
-                "refreshToken"
-            )
+        val command = RegisterUserUsecase.Command.Basic(
+            email = request.email,
+            nickname = request.nickname,
+            password = request.password
         )
+
+        given(registerUserUsecase.registerBasicUser(command))
+            .willReturn(RegisterUserUsecase.Response("accessToken", "refreshToken"))
+
         // when
-        val response =
-            mockMvc.post("/api/v1/users/register") {
-                contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(request)
-            }
+        val response = mockMvc.post("/api/v1/users/register") {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(request)
+        }
+
         // then
         response.andExpect {
             status { isOk() }
@@ -71,43 +98,6 @@ class UserControllerTest : ControllerSupporter() {
         }
     }
 
-
-    @Test
-    fun registerSocialUserTest() {
-        // given
-        val request = RegisterUserRequest.Social("register",  "nickname")
-        val command =
-            RegisterUserUsecase.Command.Social(
-                request.registerToken,
-                request.nickname,
-            )
-        given(registerUserUsecase.registerSocialUser(command)).willReturn(
-            RegisterUserUsecase.Response(
-                "accessToken",
-                "refreshToken"
-            )
-        )
-        // when
-        val response =
-            mockMvc.post("/api/v1/users/social-register") {
-                contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(request)
-            }
-        // then
-        response.andExpect {
-            status { isOk() }
-            jsonPath("$.accessToken") {
-                exists()
-                isString()
-                isNotEmpty()
-            }
-            jsonPath("$.refreshToken") {
-                exists()
-                isString()
-                isNotEmpty()
-            }
-        }
-    }
 
 
     @Test
