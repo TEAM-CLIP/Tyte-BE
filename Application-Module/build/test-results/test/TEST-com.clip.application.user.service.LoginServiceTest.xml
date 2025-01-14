@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.clip.application.user.service.LoginServiceTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-01-13T12:11:40" hostname="jangseeun-ui-noteubug.local" time="0.151">
+  <properties/>
+  <testcase name="Then: UserException.UserAlreadyRegisteredException 예외가 발생한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.02"/>
+  <testcase name="Then: access token과 refresh token을 반환하는 success 인스턴스를 반환한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.01"/>
+  <testcase name="Then: InvalidStateException 예외가 발생한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.001"/>
+  <testcase name="Then: register token을 반환하는 nonRegistered 인스턴스를 반환한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.002"/>
+  <testcase name="Then: access token과 refresh token을 반환하는 success 인스턴스를 반환한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.001"/>
+  <testcase name="Then: InvalidStateException 예외가 발생한다." classname="com.clip.application.user.service.LoginServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
