@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.clip.bootstrap.integration.user.UserApiIntegrationTest$LogoutTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-01-13T12:11:36" hostname="jangseeun-ui-noteubug.local" time="0.027">
+  <properties/>
+  <testcase name="logout()" classname="com.clip.bootstrap.integration.user.UserApiIntegrationTest$LogoutTest" time="0.016"/>
+  <testcase name="logout_with_InvalidToken()" classname="com.clip.bootstrap.integration.user.UserApiIntegrationTest$LogoutTest" time="0.01"/>
+  <system-out><![CDATA[2025-01-13T21:11:36.833+09:00  INFO 7685 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.clip.bootstrap.integration.user.UserApiIntegrationTest$LogoutTest]: LogoutTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-01-13T21:11:36.835+09:00  INFO 7685 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.clip.bootstrap.TyteApplication for test class com.clip.bootstrap.integration.user.UserApiIntegrationTest$LogoutTest
+Hibernate: select ue1_0.id,ue1_0.created_at,ue1_0.email,ue1_0.nickname,ue1_0.updated_at from user ue1_0 where ue1_0.id=?
+Hibernate: insert into user (created_at,email,nickname,updated_at,id) values (?,?,?,?,?)
+Hibernate: select ute1_0.id,ute1_0.created_at,ute1_0.token,ute1_0.updated_at,ute1_0.user_id from user_token ute1_0 where ute1_0.id=?
+Hibernate: insert into user_token (created_at,token,updated_at,user_id,id) values (?,?,?,?,?)
+Hibernate: select ute1_0.id from user_token ute1_0 where ute1_0.token=? and ute1_0.user_id=? fetch first ? rows only
+Hibernate: select ute1_0.id,ute1_0.created_at,ute1_0.token,ute1_0.updated_at,ute1_0.user_id from user_token ute1_0 where ute1_0.token=?
+Hibernate: delete from user_token where id=?
+Hibernate: select ue1_0.id,ue1_0.created_at,ue1_0.email,ue1_0.nickname,ue1_0.updated_at from user ue1_0 where ue1_0.id=?
+Hibernate: insert into user (created_at,email,nickname,updated_at,id) values (?,?,?,?,?)
+Hibernate: select ute1_0.id from user_token ute1_0 where ute1_0.token=? and ute1_0.user_id=? fetch first ? rows only
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
