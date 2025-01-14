@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/tyte
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: true
+
+
+  flyway:
+    baseline-version: 1
+    baseline-on-migrate: true
+    enabled: true
+    locations: classpath:db
