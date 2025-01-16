@@ -1,9 +1,8 @@
-package com.clip.persistence
+package com.clip.event
 
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@ComponentScan("com.clip.persistence")
-class PersistenceConfig {
-}
+@ComponentScan("com.clip.event")
+class EventConfig
