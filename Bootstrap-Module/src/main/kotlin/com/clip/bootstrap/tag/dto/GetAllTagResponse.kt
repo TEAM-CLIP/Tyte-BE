@@ -2,7 +2,7 @@ package com.clip.bootstrap.tag.dto
 
 
 data class GetAllTagResponse(
-    val tages : List<TagDetail>
+    val tags : List<TagDetail>
 ) {
     data class TagDetail(
         val tagId: String,

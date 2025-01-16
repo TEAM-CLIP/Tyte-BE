@@ -51,7 +51,7 @@ interface TagApi {
     ): GetAllTagResponse
 
     @Operation(summary = "태그 수정")
-    @PostMapping("/{tagId}")
+    @PutMapping("/{tagId}")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -62,6 +62,22 @@ interface TagApi {
     )
     fun updateTag(
         @RequestBody request: CreateTagRequest,
-        @AccessUser userId: String, @PathVariable tagId: String,
+        @PathVariable tagId: String,
+        @AccessUser userId: String,
+    )
+
+    @Operation(summary = "태그 삭제")
+    @DeleteMapping("/{tagId}")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "태그 삭제 성공"
+            )
+        ]
+    )
+    fun deleteTag(
+        @PathVariable tagId: String,
+        @AccessUser userId: String,
     )
 }
