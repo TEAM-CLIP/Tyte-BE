@@ -31,11 +31,7 @@ class UserCommandService (
         if (userAuthManagementPort.isExistsUserAuth(userClaims.socialId, userClaims.loginProvider)) {
             throw UserException.UserAlreadyRegisteredException()
         }
-        val registerUser =
-            User(
-                nickname = command.nickname,
-                email = userClaims.email,
-            )
+        val registerUser = User.create(nickname = command.nickname, email = userClaims.email)
         val userAuth =
             UserAuth(
                 userId = registerUser.id,
@@ -56,11 +52,7 @@ class UserCommandService (
 
     override fun registerBasicUser(command: RegisterUserUsecase.Command.Basic): RegisterUserUsecase.Response {
         val hashedPassword = userPasswordConvertPort.hashPassword(command.password)
-        val registerUser =
-            User(
-                nickname = command.nickname,
-                email = command.email
-            )
+        val registerUser = User.create(nickname = command.nickname, email = command.email)
 
         val userAuth =
             UserAuth(
