@@ -32,4 +32,9 @@ data class Tag(
             )
         }
     }
+
+    fun update(name: String, color: String) {
+        this.name = name
+        this.color = color
+    }
 }
