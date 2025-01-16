@@ -51,7 +51,7 @@ interface TagApi {
     ): GetAllTagResponse
 
     @Operation(summary = "태그 수정")
-    @PostMapping("/{tagId}")
+    @PutMapping("/{tagId}")
     @ApiResponses(
         value = [
             ApiResponse(
