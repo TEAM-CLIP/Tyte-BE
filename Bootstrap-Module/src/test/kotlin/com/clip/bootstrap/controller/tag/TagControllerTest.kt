@@ -1,6 +1,7 @@
 package com.clip.bootstrap.controller.tag
 
 import com.clip.application.tag.port.`in`.usecase.CreateTagUsecase
+import com.clip.application.tag.port.`in`.usecase.DeleteTagUsecase
 import com.clip.application.tag.port.`in`.usecase.GetTagUsecase
 import com.clip.application.tag.port.`in`.usecase.UpdateTagUsecase
 import com.clip.bootstrap.ControllerSupporter
@@ -10,6 +11,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
@@ -24,6 +26,9 @@ class TagControllerTest: ControllerSupporter() {
 
     @MockBean
     private lateinit var updateTagUsecase: UpdateTagUsecase
+
+    @MockBean
+    private lateinit var deleteTagUsecase: DeleteTagUsecase
 
     @Test
     fun createTagTest() {
@@ -87,5 +92,22 @@ class TagControllerTest: ControllerSupporter() {
 
         // then
         verify(updateTagUsecase).update(command)
+    }
+
+    @Test
+    fun deleteTagTest() {
+        // given
+        val userId = userMockManager.settingUser()
+        val accessToken = jwtMockManager.generateAccessToken(userId)
+        val command = DeleteTagUsecase.Command("tagId", userId)
+
+        // when
+        mockMvc.delete("/api/v1/tags/tagId") {
+            contentType = MediaType.APPLICATION_JSON
+            header("Authorization", "Bearer $accessToken")
+        }
+
+        // then
+        verify(deleteTagUsecase).delete(command)
     }
 }

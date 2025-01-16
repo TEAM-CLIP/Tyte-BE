@@ -6,6 +6,7 @@ import com.clip.bootstrap.tag.dto.CreateTagRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
@@ -95,21 +96,21 @@ class TagApiIntegrationTest : IntegrationSupporter(){
         }
     }
 
-//    @Test
-//    fun deleteTag(){
-//        //given
-//        val userId = userMockManager.settingUser()
-//        val accessToken = jwtMockManager.generateAccessToken(userId)
-//        val tagId = tagMockManager.settingTag(userId)
-//        //when
-//        val response =
-//            mockMvc.delete("/api/v1/tags/$tagId") {
-//                contentType = MediaType.APPLICATION_JSON
-//                header("Authorization", "Bearer $accessToken")
-//            }
-//        //then
-//        response.andExpect {
-//            status { isOk() }
-//        }
-//    }
+    @Test
+    fun deleteTag(){
+        //given
+        val userId = userMockManager.settingUser()
+        val accessToken = jwtMockManager.generateAccessToken(userId)
+        val tagId = tagMockManager.settingTag(userId = userId)
+        //when
+        val response =
+            mockMvc.delete("/api/v1/tags/$tagId") {
+                contentType = MediaType.APPLICATION_JSON
+                header("Authorization", "Bearer $accessToken")
+            }
+        //then
+        response.andExpect {
+            status { isOk() }
+        }
+    }
 }
