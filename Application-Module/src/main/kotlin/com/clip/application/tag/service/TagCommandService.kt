@@ -13,4 +13,12 @@ class TagCommandService : CreateTagUsecase, UpdateTagUsecase{
     override fun update(command: UpdateTagUsecase.Command) {
         TODO("Not yet implemented")
     }
+
+    override fun delete(command: DeleteTagUsecase.Command) {
+        val tag = tagManagementPort.getTagNotNull(
+            tagId = DomainId(command.tagId),
+            userId = DomainId(command.userId)
+        )
+        tagManagementPort.deleteTag(tag)
+    }
 }
