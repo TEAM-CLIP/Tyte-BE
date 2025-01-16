@@ -45,7 +45,7 @@ class TagCommandServiceTest : BehaviorSpec({
             tagCommandService.update(command)
             then("태그를 수정한다") {
                 verify {
-                    mockTagManagementPort.saveTag(withArg { savedTag ->
+                    mockTagManagementPort.updateTag(withArg { savedTag ->
                         savedTag.name shouldBe "updated_name"
                         savedTag.color shouldBe "color"
                     })
