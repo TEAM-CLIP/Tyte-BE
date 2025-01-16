@@ -33,7 +33,8 @@ interface TagJpaRepository: JpaRepository<TagEntity, String> {
     @Query(
         """
         UPDATE TagEntity t
-        SET t.tagStatus = :status
+        SET t.tagStatus = :status,
+            t.updatedAt = CURRENT_TIMESTAMP
         WHERE t.id = :tagId
         AND t.userId = :userId
     """
