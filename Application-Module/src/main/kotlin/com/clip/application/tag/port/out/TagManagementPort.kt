@@ -9,6 +9,8 @@ interface TagManagementPort {
 
     fun saveTag(tag: Tag): Tag
 
+    fun updateTag(tag: Tag): Tag
+
     fun getTagNotNull(
         tagId: DomainId,
         userId: DomainId

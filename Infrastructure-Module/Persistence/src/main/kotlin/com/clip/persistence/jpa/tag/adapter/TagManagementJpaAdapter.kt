@@ -26,6 +26,13 @@ class TagManagementJpaAdapter(
         return tag
     }
 
+    override fun updateTag(tag: Tag): Tag {
+        val tagEntity = TagMapper.toTagEntity(tag)
+        tagEntity.update()
+        tagJpaRepository.save(tagEntity)
+        return tag
+    }
+
     override fun getTagNotNull(tagId: DomainId, userId: DomainId): Tag =
         tagJpaRepository.findActiveTagByIdAndUserId(tagId.value, userId.value)?.let {
             TagMapper.toTag(it)

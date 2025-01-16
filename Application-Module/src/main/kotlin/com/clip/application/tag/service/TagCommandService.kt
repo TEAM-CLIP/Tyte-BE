@@ -33,7 +33,7 @@ class TagCommandService(
             color = command.color
         )
 
-        tagManagementPort.saveTag(tag)
+        tagManagementPort.updateTag(tag)
     }
 
     override fun delete(command: DeleteTagUsecase.Command) {
