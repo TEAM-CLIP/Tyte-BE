@@ -1,6 +1,6 @@
-package com.clip.application.tag.port.`in`
+package com.clip.application.tag.port.`in`.usecase
 
-interface GetTagUseCase {
+interface GetTagUsecase {
     fun getAll(getAllQuery: GetAllQuery): GetAllResponse
 
     data class GetAllQuery(
