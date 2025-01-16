@@ -1,4 +1,4 @@
-package com.clip.application.tag.port.`in`
+package com.clip.application.tag.port.`in`.usecase
 
 interface CreateTagUsecase {
     fun create(command: Command)
