@@ -37,4 +37,12 @@ class UserManagementJpaAdapter(
         userJpaRepository.deleteById(user.id.value)
     }
 
+    override fun getUsersByIds(userIds: List<DomainId>): List<User> {
+        return userJpaRepository.findAllByIds(userIds.map { it.value }).map { UserMapper.toUser(it) }
+    }
+
+    override fun getSearchedUsersByNickname(nickname: String, userId: DomainId): List<User> {
+        return userJpaRepository.findAllByNicknameContaining(nickname).map { UserMapper.toUser(it) }.filter { it.id != userId}
+    }
+
 }
