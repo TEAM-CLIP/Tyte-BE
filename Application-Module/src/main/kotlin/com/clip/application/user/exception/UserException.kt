@@ -47,6 +47,25 @@ sealed class UserException(
             httpStatus = 401,
         )
 
+    class FriendNotFoundException: UserException(
+        errorCode = 7,
+        message = "친구를 찾을 수 없습니다."
+    )
+
+    class FriendRequestNotFoundException: UserException(
+        errorCode = 8,
+        message = "친구 요청을 찾을 수 없습니다."
+    )
+
+    class FriendAlreadyExistsException: UserException(
+        errorCode = 9,
+        message = "이미 친구 관계인 사용자입니다."
+    )
+
+    class FriendRequestAlreadyExistsException: UserException(
+        errorCode = 10,
+        message = "이미 친구 요청을 보낸 사용자입니다."
+    )
 
 
     companion object{
