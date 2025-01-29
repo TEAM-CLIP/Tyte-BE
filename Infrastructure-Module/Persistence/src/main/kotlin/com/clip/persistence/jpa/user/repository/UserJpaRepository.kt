@@ -7,4 +7,10 @@ import org.springframework.data.jpa.repository.Query
 interface UserJpaRepository : JpaRepository<UserEntity, String> {
 
     fun findByEmail (email: String): UserEntity?
+
+    @Query("SELECT u FROM UserEntity u WHERE u.id IN :ids")
+    fun findAllByIds(ids: List<String>): List<UserEntity>
+
+    fun findAllByNicknameContaining(nickname: String): List<UserEntity>
+
 }

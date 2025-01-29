@@ -16,4 +16,8 @@ interface UserManagementPort {
     fun getUserNotNull(userId: DomainId): User
 
     fun delete(user: User)
+
+    fun getUsersByIds(userIds : List<DomainId>): List<User>
+
+    fun getSearchedUsersByNickname(nickname: String, userId: DomainId): List<User>
 }
