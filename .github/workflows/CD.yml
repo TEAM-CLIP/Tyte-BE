@@ -51,11 +51,8 @@ jobs:
         env:
           ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
         run: |
-          echo "Building Docker image..."
           docker build -t ${{ secrets.ECR_REPOSITORY_NAME }} -f .deploy/Dockerfile-dev .
-          echo "Tagging Docker image..."
           docker tag ${{ secrets.ECR_REPOSITORY_NAME }}:latest ${{ secrets.ECR_REPOSITORY_URI }}
-          echo "Pushing Docker image to ECR..."
           docker push ${{ secrets.ECR_REPOSITORY_URI }}
 
       - name: Fetch secrets from AWS Secrets Manager
@@ -63,7 +60,6 @@ jobs:
           AWS_REGION: ap-northeast-2
           SECRET_NAME: my-app-secrets
         run: |
-          echo "Fetching secrets from AWS Secrets Manager..."
           aws secretsmanager get-secret-value --region ap-northeast-2 --secret-id ${{ secrets.SECRET_NAME }} --query 'SecretString' --output text | \
           jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > secrets.env
 
@@ -74,26 +70,19 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            echo "Pulling Docker image from ECR..."
             docker pull ${{ secrets.ECR_REPOSITORY_URI }}
             
-            echo "Checking if an existing container is running..."
             if [ "$(docker ps -q -f name=${{secrets.CONTAINER_NAME}})" ]; then
-              echo "Stopping and removing the existing container..."
               docker stop ${{secrets.CONTAINER_NAME}} && docker rm ${{secrets.CONTAINER_NAME}}
             fi
             
-            echo "Removing unused Docker resources..."
             docker system prune -f
             
-            echo "Copying secrets file to EC2 instance..."
             cp ./secrets.env /home/${{ secrets.EC2_USER }}/secrets.env
             
-            echo "Running new Docker container..."
             docker run -d --name ${{secrets.CONTAINER_NAME}} \
-              --env-file /home/${{ secrets.EC2_USER }}/secrets.env \
+              --env-file ./secrets.env \
               --restart always \
               -p 80:8080 \
               ${{ secrets.ECR_REPOSITORY_URI }}
             
-            echo "Deployment completed successfully!"
