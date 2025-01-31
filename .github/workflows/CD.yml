@@ -87,7 +87,7 @@ jobs:
             docker system prune -f
             
             echo "Copying secrets file to EC2 instance..."
-            mv ./secrets.env /home/${{ secrets.EC2_USER }}/secrets.env
+            cp ./secrets.env /home/${{ secrets.EC2_USER }}/secrets.env
             
             echo "Running new Docker container..."
             docker run -d --name ${{secrets.CONTAINER_NAME}} \
