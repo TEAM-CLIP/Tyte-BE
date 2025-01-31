@@ -16,7 +16,7 @@ plugins {
 
 
 allprojects {
-    group = "com.ddom"
+    group = "com.clip"
     version = ""
 
     tasks.withType<JavaCompile> {
@@ -31,7 +31,7 @@ allprojects {
     }
 
     tasks.withType<BootJar> {
-        enabled = project.name == Modules.BOOTSTRAP_MODULE
+        enabled = project.name == Versions.ROOT_MODULE
     }
 
 
@@ -49,6 +49,7 @@ allprojects {
 
     dependencies {
         implementation(Dependencies.Spring.BOOT)
+        implementation(Dependencies.Spring.ACTUATOR)
         implementation(Dependencies.Kotlin.KOTLIN_REFLECT)
         testImplementation(Dependencies.Spring.TEST)
         testFixturesImplementation(Dependencies.Spring.TEST)
