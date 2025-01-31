@@ -53,6 +53,8 @@ jobs:
         run: |
           echo "Building Docker image..."
           docker build -t ${{ secrets.ECR_REPOSITORY_NAME }} -f .deploy/Dockerfile-dev .
+          echo "Tagging Docker image..."
+          docker tag ${{ secrets.ECR_REPOSITORY_NAME }}:latest ${{ secrets.ECR_REPOSITORY_URI }}
           echo "Pushing Docker image to ECR..."
           docker push ${{ secrets.ECR_REPOSITORY_URI }}
 
