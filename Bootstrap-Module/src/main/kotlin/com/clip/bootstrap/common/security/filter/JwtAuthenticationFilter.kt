@@ -22,15 +22,14 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         val token = request.getHeader(AUTHORIZATION_HEADER)
-        val userAuthentication = if (token != null && token.startsWith(BEARER_PREFIX)) {
+        if (token != null && token.startsWith(BEARER_PREFIX)) {
             val accessToken = token.substring(BEARER_PREFIX.length)
             val resolveResponse = tokenResolveUsecase.resolveAccessToken(accessToken)
-            UserAuthentication(resolveResponse.userId)
-        } else {
-            UserAuthentication("Anonymous")
-        }
-        SecurityContextHolder.setContext(SecurityContext(userAuthentication))
 
+            SecurityContextHolder.setContext(
+                SecurityContext(UserAuthentication(resolveResponse.userId)),
+            )
+        }
 
         val filterResponse = filterChain.doFilter(request, response)
 
