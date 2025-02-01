@@ -150,11 +150,7 @@ class UserCommandServiceTest :
                 }
             }
 
-            val getUserAuth = UserAuth(
-                userId = DomainId.generate(),
-                loginProvider = LoginProvider.BASIC,
-                passwordHash = "password",
-            )
+            val getUserAuth = UserAuth.createBasicAuth(userId = DomainId.generate(), passwordHash = "password")
             every { mockUserAuthManagementPort.getUserAuthByEmail("email") } returns getUserAuth
             `when`("일반 로그인으로 가입한 사용자일 경우") {
                 val response = userCommandService.verifyUser(command)
@@ -163,10 +159,10 @@ class UserCommandServiceTest :
                 }
             }
 
-            val socialUserAuth = UserAuth(
+            val socialUserAuth = UserAuth.createSocialAuth(
                 userId = DomainId.generate(),
                 socialId = "socialId",
-                loginProvider = LoginProvider.GOOGLE,
+                loginProvider = LoginProvider.GOOGLE
             )
             every { mockUserAuthManagementPort.getUserAuthByEmail("email") } returns socialUserAuth
             `when`("소셜 로그인으로 가입한 사용자일 경우") {
@@ -180,12 +176,11 @@ class UserCommandServiceTest :
 
         given("회원 탈퇴 요청이 들어왔을 때") {
             val command = DeleteUserUsecase.Command("userId")
-            val getUserAuth =
-                UserAuth(
-                    userId = DomainId.generate(),
-                    socialId = "socialId",
-                    loginProvider = LoginProvider.GOOGLE,
-                )
+            val getUserAuth = UserAuth.createSocialAuth(
+                userId = DomainId.generate(),
+                socialId = "socialId",
+                loginProvider = LoginProvider.GOOGLE
+            )
             val getUser = UserFixture.createUser(getUserAuth.userId)
             every { mockUserManagementPort.getUserNotNull(DomainId(command.userId)) } returns getUser
             every { mockUserAuthManagementPort.getNotNull(getUser.id) } returns getUserAuth

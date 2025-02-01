@@ -38,7 +38,7 @@ class UserMockManager(
         provider: String = "GOOGLE",
     ) {
         userAuthManagementPort.saveUserAuth(
-            UserAuth(
+            UserAuth.createSocialAuth(
                 userId = DomainId(userId),
                 socialId = socialId,
                 loginProvider = LoginProvider.parse(provider),

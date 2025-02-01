@@ -23,9 +23,8 @@ object UserFixture {
         socialId: String = "socialId",
         loginProvider: LoginProvider = LoginProvider.GOOGLE,
     ): UserAuth =
-        UserAuth(
+        UserAuth.createSocialAuth(
             userId = DomainId(userId),
             socialId = socialId,
-            loginProvider = loginProvider,
-        )
+            loginProvider = loginProvider)
 }

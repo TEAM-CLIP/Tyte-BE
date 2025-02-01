@@ -34,12 +34,11 @@ class UserCommandService (
             throw UserException.UserAlreadyRegisteredException()
         }
         val registerUser = User.create(nickname = command.nickname, email = userClaims.email)
-        val userAuth =
-            UserAuth(
-                userId = registerUser.id,
-                socialId = userClaims.socialId,
-                loginProvider = userClaims.loginProvider,
-            )
+        val userAuth = UserAuth.createSocialAuth(
+            userId = registerUser.id,
+            socialId = userClaims.socialId,
+            loginProvider = userClaims.loginProvider
+        )
 
         userManagementPort.saveUser(registerUser)
         userAuthManagementPort.saveUserAuth(userAuth)
@@ -56,12 +55,7 @@ class UserCommandService (
         val hashedPassword = userPasswordConvertPort.hashPassword(command.password)
         val registerUser = User.create(nickname = command.nickname, email = command.email)
 
-        val userAuth =
-            UserAuth(
-                userId = registerUser.id,
-                loginProvider = LoginProvider.BASIC,
-                passwordHash = hashedPassword
-            )
+        val userAuth = UserAuth.createBasicAuth(userId = registerUser.id, passwordHash = hashedPassword)
         userManagementPort.saveUser(registerUser)
         userAuthManagementPort.saveUserAuth(userAuth)
 

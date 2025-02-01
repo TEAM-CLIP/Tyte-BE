@@ -1,14 +1,15 @@
 package com.clip.domain.user.entity
 
+import com.clip.domain.common.AggregateRoot
 import com.clip.domain.common.DomainId
 import com.clip.domain.user.enums.RequestStatus
 
 class FriendRequest(
-    val id : DomainId,
+    id : DomainId,
     val receiverId: String,
     val requesterId: String,
     var requestStatus: RequestStatus
-) {
+): AggregateRoot<FriendRequest>(id) {
     companion object {
         fun create(
             id: DomainId = DomainId.generate(),

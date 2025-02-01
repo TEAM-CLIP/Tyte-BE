@@ -39,11 +39,7 @@ class LoginServiceTest :
             )
         given("소셜 로그인에서 요청한 사용자가") {
             val authInfo = AuthInfo(LoginProvider.GOOGLE, "socialId", "email")
-            val getUserAuth = UserAuth(
-                userId = DomainId.generate(),
-                socialId = "socialId",
-                loginProvider = LoginProvider.GOOGLE,
-            )
+            val getUserAuth = UserAuth.createSocialAuth(userId = DomainId.generate(), socialId = authInfo.socialId, loginProvider = authInfo.loginProvider)
             val getUser = UserFixture.createUser(getUserAuth.userId)
 
             `when`("다른 방법으로 가입되어 있다면") {
@@ -119,11 +115,7 @@ class LoginServiceTest :
         given("기본 로그인에서 요청한 사용자가") {
             val command = LoginUsecase.Command.Basic("email", "password")
             val getUser = UserFixture.createUser()
-            val getUserAuth = UserAuth(
-                userId = getUser.id,
-                loginProvider = LoginProvider.BASIC,
-                passwordHash = "password",
-            )
+            val getUserAuth = UserAuth.createBasicAuth(userId = getUser.id, passwordHash = "password")
             every { mockUserManagementPort.getUserNotNullByEmail(command.email) } returns getUser
             every { mockUserManagementPort.getUser(getUserAuth.userId) } returns getUser
             every { mockUserAuthManagementPort.getNotNull(getUser.id) } returns getUserAuth
