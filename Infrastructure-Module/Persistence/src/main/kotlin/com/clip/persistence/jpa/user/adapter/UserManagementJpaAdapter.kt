@@ -6,7 +6,7 @@ import com.clip.common.event.EventPublisher
 import com.clip.domain.common.DomainId
 import com.clip.domain.user.entity.User
 import com.clip.persistence.jpa.user.UserMapper
-import com.clip.persistence.jpa.user.repository.UserJpaRepository
+import com.clip.persistence.jpa.user.repository.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
@@ -22,27 +22,27 @@ class UserManagementJpaAdapter(
         return user
     }
 
-    override fun getUser(userId: DomainId): User? = userJpaRepository.findByIdOrNull(userId.value)?.let { UserMapper.toUser(it) }
+    override fun getUser(userId: DomainId): User? = userJpaRepository.findActiveUserById(userId.value)?.let { UserMapper.toUser(it) }
 
     override fun getUserNotNullByEmail(email: String): User {
-        return userJpaRepository.findByEmail(email)?.let { UserMapper.toUser(it) }
+        return userJpaRepository.findActiveUserByEmail(email)?.let { UserMapper.toUser(it) }
             ?: throw UserException.UserNotFoundException()
     }
 
     override fun getUserNotNull(userId: DomainId): User =
-        userJpaRepository.findByIdOrNull(userId.value)?.let { UserMapper.toUser(it) }
+        userJpaRepository.findActiveUserById(userId.value)?.let { UserMapper.toUser(it) }
             ?: throw UserException.UserNotFoundException()
 
     override fun delete(user: User) {
-        userJpaRepository.deleteById(user.id.value)
+        userJpaRepository.deleteUserById(user.id.value)
     }
 
     override fun getUsersByIds(userIds: List<DomainId>): List<User> {
-        return userJpaRepository.findAllByIds(userIds.map { it.value }).map { UserMapper.toUser(it) }
+        return userJpaRepository.findAllActiveUserByIds(userIds.map { it.value }).map { UserMapper.toUser(it) }
     }
 
     override fun getSearchedUsersByNickname(nickname: String, userId: DomainId): List<User> {
-        return userJpaRepository.findAllByNicknameContaining(nickname).map { UserMapper.toUser(it) }.filter { it.id != userId}
+        return userJpaRepository.findAllActiveUserByNicknameContaining(nickname).map { UserMapper.toUser(it) }.filter { it.id != userId}
     }
 
 }
