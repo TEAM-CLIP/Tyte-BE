@@ -1,6 +1,6 @@
 package com.clip.persistence.jpa.user.entity
 
-import com.clip.persistence.jpa.common.AggregateRoot
+import com.clip.persistence.jpa.common.BaseEntity
 import com.clip.persistence.jpa.common.EntityStatus
 import jakarta.persistence.*
 
@@ -10,7 +10,7 @@ class UserEntity(
     id: String,
     nickname: String,
     email: String
-) : AggregateRoot<UserEntity>(id) {
+) : BaseEntity(id) {
     @Column(nullable = false)
     val nickname: String = nickname
 

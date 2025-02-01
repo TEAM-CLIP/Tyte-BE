@@ -1,6 +1,6 @@
 package com.clip.persistence.jpa.user.entity
 
-import com.clip.persistence.jpa.common.AggregateRoot
+import com.clip.persistence.jpa.common.BaseEntity
 import jakarta.persistence.*
 
 @Entity
@@ -16,7 +16,7 @@ class UserAuthEntity(
     socialId: String?,
     loginProvider: String,
     passwordHash: String?
-) : AggregateRoot<UserAuthEntity>(id) {
+) : BaseEntity(id) {
     @Column(nullable = false)
     val userId: String = userId
 

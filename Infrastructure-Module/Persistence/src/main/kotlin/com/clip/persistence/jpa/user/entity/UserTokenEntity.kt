@@ -1,6 +1,6 @@
 package com.clip.persistence.jpa.user.entity
 
-import com.clip.persistence.jpa.common.AggregateRoot
+import com.clip.persistence.jpa.common.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Index
@@ -17,7 +17,7 @@ class UserTokenEntity(
     id: String,
     userId : String?,
     token: String,
-) : AggregateRoot<UserTokenEntity>(id) {
+) : BaseEntity(id) {
     @Column(nullable = false, unique = true, length = 500)
     val token: String = token
 
