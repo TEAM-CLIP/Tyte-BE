@@ -20,8 +20,10 @@ class UserCommandService (
     private val userAuthManagementPort: UserAuthManagementPort,
     private val userManagementPort: UserManagementPort,
     private val userTokenManagementPort: UserTokenManagementPort,
-    private val userPasswordConvertPort: UserPasswordConvertPort
-) : RegisterUserUsecase, VerifyUserUsecase, DeleteUserUsecase{
+    private val userPasswordConvertPort: UserPasswordConvertPort,
+    private val friendManagementPort: FriendManagementPort,
+    private val friendRequestManagementPort: FriendRequestManagementPort
+    ) : RegisterUserUsecase, VerifyUserUsecase, DeleteUserUsecase{
 
     override fun registerSocialUser(command: RegisterUserUsecase.Command.Social): RegisterUserUsecase.Response {
         if (!userTokenManagementPort.isExistsToken(command.registerToken)) {
@@ -86,5 +88,7 @@ class UserCommandService (
         val userAuth = userAuthManagementPort.getNotNull(user.id)
         userAuthManagementPort.delete(userAuth)
         userManagementPort.delete(user)
+        friendManagementPort.deleteAllFriends(user.id)
+        friendRequestManagementPort.deleteAllFriendRequests(user.id)
     }
 }

@@ -47,4 +47,8 @@ class FriendRequestManagementJpaAdapter(
     override fun getAllPendingFriendRequests(receiverId: DomainId, requestStatus: RequestStatus): List<FriendRequest> {
         return friendRequestJpaRepository.findAllActiveAndPendingFriendRequestByReceiverId(receiverId.value, requestStatus.name).map { FriendMapper.toFriendRequest(it) }
     }
+
+    override fun deleteAllFriendRequests(deleteUserId: DomainId) {
+        friendRequestJpaRepository.deleteAllByUserId(deleteUserId.value)
+    }
 }

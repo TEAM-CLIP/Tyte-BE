@@ -61,6 +61,18 @@ interface FriendRequestJpaRepository: JpaRepository<FriendRequestEntity, String>
     """
     )
     fun findByReceiverIdAndRequesterId(receiverId: String, requesterId: String, status: EntityStatus): FriendRequestEntity?
+
+    @Modifying
+    @Query(
+        """
+        UPDATE FriendRequestEntity f
+        SET f.friendRequestStatus = :status,
+            f.updatedAt = CURRENT_TIMESTAMP
+        WHERE f.receiverId = :deleteUserId
+        OR f.requesterId = :deleteUserId
+    """
+    )
+    fun updateAllFriendRequestStatusByUserId(deleteUserId: String, status: EntityStatus)
 }
 
 fun FriendRequestJpaRepository.findActiveFriendRequestById(id: String): FriendRequestEntity?
@@ -78,3 +90,7 @@ fun FriendRequestJpaRepository.findActiveFriendRequestByReceiverIdAndRequesterId
 
 fun FriendRequestJpaRepository.findAllActiveFriendRequestByReceiverId(receiverId: String): List<FriendRequestEntity>
 = findAllByReceiverId(receiverId, EntityStatus.ACTIVE)
+
+fun FriendRequestJpaRepository.deleteAllByUserId(deleteUserId: String) {
+    updateAllFriendRequestStatusByUserId(deleteUserId, EntityStatus.DELETED)
+}

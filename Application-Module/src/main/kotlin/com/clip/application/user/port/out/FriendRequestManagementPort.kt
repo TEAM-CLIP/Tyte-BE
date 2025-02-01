@@ -22,4 +22,6 @@ interface FriendRequestManagementPort {
 
     fun getAllPendingFriendRequests(receiverId: DomainId, requestStatus: RequestStatus) : List<FriendRequest>
 
+    fun deleteAllFriendRequests(deleteUserId: DomainId)
+
 }

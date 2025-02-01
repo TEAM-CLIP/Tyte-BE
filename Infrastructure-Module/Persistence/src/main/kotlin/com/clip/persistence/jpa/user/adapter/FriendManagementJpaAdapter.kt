@@ -5,10 +5,7 @@ import com.clip.application.user.port.out.FriendManagementPort
 import com.clip.domain.common.DomainId
 import com.clip.domain.user.entity.Friend
 import com.clip.persistence.jpa.user.FriendMapper
-import com.clip.persistence.jpa.user.repository.FriendJpaRepository
-import com.clip.persistence.jpa.user.repository.deleteByUserIdAndFriendId
-import com.clip.persistence.jpa.user.repository.findActiveFriendByUserIdAndFriendId
-import com.clip.persistence.jpa.user.repository.findAllActiveFriendByUserId
+import com.clip.persistence.jpa.user.repository.*
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -39,5 +36,9 @@ class FriendManagementJpaAdapter(
         return friendJpaRepository.findActiveFriendByUserIdAndFriendId(userId.value, friendId.value)
             ?.let { FriendMapper.toFriend(it) }
             ?: return null
+    }
+
+    override fun deleteAllFriends(deleteUserId: DomainId) {
+        friendJpaRepository.deleteAllByUserId(deleteUserId.value)
     }
 }
