@@ -3,6 +3,7 @@ package com.clip.persistence.jpa.user.repository
 import com.clip.persistence.jpa.common.EntityStatus
 import com.clip.persistence.jpa.user.entity.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface UserJpaRepository : JpaRepository<UserEntity, String> {
@@ -19,6 +20,7 @@ interface UserJpaRepository : JpaRepository<UserEntity, String> {
     @Query("SELECT u FROM UserEntity u WHERE u.nickname LIKE %:nickname% AND u.userStatus = :status")
     fun findAllByNicknameContaining(nickname: String, status: EntityStatus): List<UserEntity>
 
+    @Modifying
     @Query(
         """
         UPDATE UserEntity u
