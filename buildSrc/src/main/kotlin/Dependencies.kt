@@ -8,6 +8,7 @@ object Dependencies {
         const val REACTOR_TEST = "io.projectreactor:reactor-test"
         const val OPEN_API = "org.springdoc:springdoc-openapi-starter-webmvc-ui:${Versions.OPEN_API}"
         const val TRANSACTION = "org.springframework:spring-tx"
+        const val ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
     }
 
     object TemplateEngine{
