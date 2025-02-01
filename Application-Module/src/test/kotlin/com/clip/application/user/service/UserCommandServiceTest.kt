@@ -6,11 +6,9 @@ import com.clip.application.user.port.`in`.DeleteUserUsecase
 import com.clip.application.user.port.`in`.RegisterUserUsecase
 import com.clip.application.user.port.`in`.VerifyUserUsecase
 import com.clip.application.user.port.out.*
-import com.clip.application.user.vo.AuthInfo
 import com.clip.application.user.vo.UserClaims
 import com.clip.domain.UserFixture
 import com.clip.domain.common.DomainId
-import com.clip.domain.user.entity.User
 import com.clip.domain.user.entity.UserAuth
 import com.clip.domain.user.enums.LoginProvider
 import io.kotest.assertions.throwables.shouldThrow
@@ -28,6 +26,8 @@ class UserCommandServiceTest :
         val mockUserTokenConvertPort = mockk<UserTokenConvertPort>()
         val mockUserTokenManagementPort = mockk<UserTokenManagementPort>(relaxed = true)
         val mockUserPasswordConvertPort = mockk<UserPasswordConvertPort>()
+        val mockFriendManagementPort = mockk<FriendManagementPort>(relaxed = true)
+        val mockFriendRequestManagementPort = mockk<FriendRequestManagementPort>(relaxed = true)
 
         val userCommandService =
             UserCommandService(
@@ -35,7 +35,9 @@ class UserCommandServiceTest :
                 mockUserAuthManagementPort,
                 mockUserManagementPort,
                 mockUserTokenManagementPort,
-                mockUserPasswordConvertPort
+                mockUserPasswordConvertPort,
+                mockFriendManagementPort,
+                mockFriendRequestManagementPort
             )
 
         given("소셜 로그인을 통한 회원 가입 요청이 들어왔을 때") {
@@ -193,6 +195,8 @@ class UserCommandServiceTest :
                 then("회원 정보와 인증 정보를 삭제한다.") {
                     verify { mockUserManagementPort.delete(getUser) }
                     verify { mockUserAuthManagementPort.delete(getUserAuth) }
+                    verify { mockFriendManagementPort.deleteAllFriends(getUser.id) }
+                    verify { mockFriendRequestManagementPort.deleteAllFriendRequests(getUser.id) }
                 }
             }
         }
