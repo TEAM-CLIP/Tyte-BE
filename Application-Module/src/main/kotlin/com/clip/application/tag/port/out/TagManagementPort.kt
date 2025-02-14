@@ -19,4 +19,6 @@ interface TagManagementPort {
     fun saveAll(tags: List<Tag>): List<Tag>
 
     fun deleteTag(tag: Tag)
+
+    fun getAllTagByIds(tagIds: List<DomainId>): List<Tag>
 }
