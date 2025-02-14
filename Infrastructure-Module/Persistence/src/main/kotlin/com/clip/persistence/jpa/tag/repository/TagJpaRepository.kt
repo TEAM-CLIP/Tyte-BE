@@ -40,6 +40,16 @@ interface TagJpaRepository: JpaRepository<TagEntity, String> {
     """
     )
     fun updateTagEntityStatusByIdAndUserId(tagId: String, userId: String, status: EntityStatus)
+
+    @Query(
+        """
+        SELECT t
+        FROM TagEntity t
+        WHERE t.id IN :tagIds
+        AND t.tagStatus = :status
+    """
+    )
+    fun findAllBy(tagIds: List<String>, status: EntityStatus): List<TagEntity>
 }
 
 fun TagJpaRepository.findAllActiveTagByUserId(
@@ -57,3 +67,7 @@ fun TagJpaRepository.deleteByIdAndUserId(
 ) {
     updateTagEntityStatusByIdAndUserId(tagId, userId, EntityStatus.DELETED)
 }
+
+fun TagJpaRepository.findAllActiveTagByIds(
+    tagIds: List<String>
+): List<TagEntity> = findAllBy(tagIds, EntityStatus.ACTIVE)

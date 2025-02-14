@@ -1,0 +1,3 @@
+openai:
+  key: ${OPENAI_KEY}
+  prompt: ${OPENAI_PROMPT}

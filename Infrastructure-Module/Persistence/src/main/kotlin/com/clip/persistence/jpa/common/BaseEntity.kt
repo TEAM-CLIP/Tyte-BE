@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 @MappedSuperclass
 abstract class BaseEntity(
     @Id
-    open val id: String = DomainId.generate().value,
+    val id: String = DomainId.generate().value,
 ) {
     var createdAt: LocalDateTime = LocalDateTime.now()
 

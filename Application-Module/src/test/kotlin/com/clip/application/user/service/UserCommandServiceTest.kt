@@ -6,11 +6,9 @@ import com.clip.application.user.port.`in`.DeleteUserUsecase
 import com.clip.application.user.port.`in`.RegisterUserUsecase
 import com.clip.application.user.port.`in`.VerifyUserUsecase
 import com.clip.application.user.port.out.*
-import com.clip.application.user.vo.AuthInfo
 import com.clip.application.user.vo.UserClaims
 import com.clip.domain.UserFixture
 import com.clip.domain.common.DomainId
-import com.clip.domain.user.entity.User
 import com.clip.domain.user.entity.UserAuth
 import com.clip.domain.user.enums.LoginProvider
 import io.kotest.assertions.throwables.shouldThrow
@@ -28,6 +26,8 @@ class UserCommandServiceTest :
         val mockUserTokenConvertPort = mockk<UserTokenConvertPort>()
         val mockUserTokenManagementPort = mockk<UserTokenManagementPort>(relaxed = true)
         val mockUserPasswordConvertPort = mockk<UserPasswordConvertPort>()
+        val mockFriendManagementPort = mockk<FriendManagementPort>(relaxed = true)
+        val mockFriendRequestManagementPort = mockk<FriendRequestManagementPort>(relaxed = true)
 
         val userCommandService =
             UserCommandService(
@@ -35,7 +35,9 @@ class UserCommandServiceTest :
                 mockUserAuthManagementPort,
                 mockUserManagementPort,
                 mockUserTokenManagementPort,
-                mockUserPasswordConvertPort
+                mockUserPasswordConvertPort,
+                mockFriendManagementPort,
+                mockFriendRequestManagementPort
             )
 
         given("소셜 로그인을 통한 회원 가입 요청이 들어왔을 때") {
@@ -148,11 +150,7 @@ class UserCommandServiceTest :
                 }
             }
 
-            val getUserAuth = UserAuth(
-                userId = DomainId.generate(),
-                loginProvider = LoginProvider.BASIC,
-                passwordHash = "password",
-            )
+            val getUserAuth = UserAuth.createBasicAuth(userId = DomainId.generate(), passwordHash = "password")
             every { mockUserAuthManagementPort.getUserAuthByEmail("email") } returns getUserAuth
             `when`("일반 로그인으로 가입한 사용자일 경우") {
                 val response = userCommandService.verifyUser(command)
@@ -161,10 +159,10 @@ class UserCommandServiceTest :
                 }
             }
 
-            val socialUserAuth = UserAuth(
+            val socialUserAuth = UserAuth.createSocialAuth(
                 userId = DomainId.generate(),
                 socialId = "socialId",
-                loginProvider = LoginProvider.GOOGLE,
+                loginProvider = LoginProvider.GOOGLE
             )
             every { mockUserAuthManagementPort.getUserAuthByEmail("email") } returns socialUserAuth
             `when`("소셜 로그인으로 가입한 사용자일 경우") {
@@ -178,12 +176,11 @@ class UserCommandServiceTest :
 
         given("회원 탈퇴 요청이 들어왔을 때") {
             val command = DeleteUserUsecase.Command("userId")
-            val getUserAuth =
-                UserAuth(
-                    userId = DomainId.generate(),
-                    socialId = "socialId",
-                    loginProvider = LoginProvider.GOOGLE,
-                )
+            val getUserAuth = UserAuth.createSocialAuth(
+                userId = DomainId.generate(),
+                socialId = "socialId",
+                loginProvider = LoginProvider.GOOGLE
+            )
             val getUser = UserFixture.createUser(getUserAuth.userId)
             every { mockUserManagementPort.getUserNotNull(DomainId(command.userId)) } returns getUser
             every { mockUserAuthManagementPort.getNotNull(getUser.id) } returns getUserAuth
@@ -193,6 +190,8 @@ class UserCommandServiceTest :
                 then("회원 정보와 인증 정보를 삭제한다.") {
                     verify { mockUserManagementPort.delete(getUser) }
                     verify { mockUserAuthManagementPort.delete(getUserAuth) }
+                    verify { mockFriendManagementPort.deleteAllFriends(getUser.id) }
+                    verify { mockFriendRequestManagementPort.deleteAllFriendRequests(getUser.id) }
                 }
             }
         }

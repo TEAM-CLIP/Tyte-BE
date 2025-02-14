@@ -40,6 +40,18 @@ interface FriendJpaRepository: JpaRepository<FriendEntity, String> {
     """
     )
     fun updateFriendStatusByUserIdAndFriendId(userId: String, friendId: String, status: EntityStatus)
+
+    @Modifying
+    @Query(
+        """
+        UPDATE FriendEntity f
+        SET f.friendStatus = :status,
+            f.updatedAt = CURRENT_TIMESTAMP
+        WHERE f.userId = :deleteUserId
+        OR f.friendId = :deleteUserId
+    """
+    )
+    fun updateAllFriendStatusByUserId(deleteUserId: String, status: EntityStatus)
 }
 
 fun FriendJpaRepository.findActiveFriendByUserIdAndFriendId(userId: String, friendId: String): FriendEntity?
@@ -50,4 +62,8 @@ fun FriendJpaRepository.findAllActiveFriendByUserId(userId: String): List<Friend
 
 fun FriendJpaRepository.deleteByUserIdAndFriendId(userId: String, friendId: String) {
     updateFriendStatusByUserIdAndFriendId(userId, friendId, EntityStatus.DELETED)
+}
+
+fun FriendJpaRepository.deleteAllByUserId(deleteUserId: String) {
+    updateAllFriendStatusByUserId(deleteUserId, EntityStatus.DELETED)
 }

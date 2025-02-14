@@ -5,10 +5,7 @@ import com.clip.application.tag.port.out.TagManagementPort
 import com.clip.domain.common.DomainId
 import com.clip.domain.tag.entity.Tag
 import com.clip.persistence.jpa.tag.TagMapper
-import com.clip.persistence.jpa.tag.repository.TagJpaRepository
-import com.clip.persistence.jpa.tag.repository.deleteByIdAndUserId
-import com.clip.persistence.jpa.tag.repository.findActiveTagByIdAndUserId
-import com.clip.persistence.jpa.tag.repository.findAllActiveTagByUserId
+import com.clip.persistence.jpa.tag.repository.*
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -50,4 +47,8 @@ class TagManagementJpaAdapter(
             userId = tag.userId.value
         )
     }
+
+    override fun getAllTagByIds(tagIds: List<DomainId>): List<Tag> =
+        tagJpaRepository.findAllActiveTagByIds(tagIds.map { it.value })
+            .map { TagMapper.toTag(it) }
 }

@@ -17,4 +17,6 @@ interface FriendManagementPort {
 
     fun getFriend(userId: DomainId, friendId: DomainId): Friend?
 
+    fun deleteAllFriends(deleteUserId: DomainId)
+
 }

@@ -1,6 +1,6 @@
 package com.clip.persistence.jpa.tag.entity
 
-import com.clip.persistence.jpa.common.AggregateRoot
+import com.clip.persistence.jpa.common.BaseEntity
 import com.clip.persistence.jpa.common.EntityStatus
 import com.clip.persistence.jpa.user.entity.UserEntity
 import jakarta.persistence.*
@@ -12,7 +12,7 @@ class TagEntity(
     userId: String,
     name: String,
     color: String,
-) : AggregateRoot<TagEntity>(id) {
+) : BaseEntity(id) {
 
     @Column(nullable = false)
     var name: String = name
