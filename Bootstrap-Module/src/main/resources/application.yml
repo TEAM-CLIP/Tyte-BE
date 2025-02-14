@@ -4,12 +4,15 @@ spring:
       dev:
         - security-local
         - persistence
+        - client
       local:
         - security-local
         - persistence-local
+        - client
       test:
         - security-local
         - persistence-test
+        - client
     active: local
   management:
     endpoints:
